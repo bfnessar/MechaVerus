@@ -1,0 +1,12 @@
+List of Page Objects and their functions (planned):
+	* SN_Homepage(instance_url);
+		* .login_as(username, password)
+		* .is_logged_in()
+		* .impersonate_user(username)
+		* .current_impersonation()
+		* .navigate_through_filter(target)
+
+	* SN_NewIncident(role):
+	* SN_ExistingIncident(url, role, incident_state):
+
+
