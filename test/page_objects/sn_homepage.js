@@ -45,9 +45,11 @@ SN_Homepage.prototype.impersonate_user = function(username) {
     this.driver.click('#s2id_autogen3'); // Click on the text field
     this.driver.waitForExist('#s2id_autogen4_search', 5000); // Supposed to wait for options to populate
     this.driver.setValue('#s2id_autogen4_search',username); // Enter username as text
+    // this.driver.debug();
     this.driver.pause(5000);
     this.driver.keys(['Enter']); // Submit
     this.driver.pause(3000);
+    // this.driver.waitForExist('#filter', 3000);
     this.driver.frameParent();
 };
 SN_Homepage.prototype.navToNewRecordForm = function(target) {
@@ -58,12 +60,15 @@ SN_Homepage.prototype.navToNewRecordForm = function(target) {
 	this.driver.pause(1000);
 	this.driver.keys(['Enter']);
 	this.driver.pause(1000);
-	this.driver.frame('gsft_main');
-	// I guess it should return a new page object of the relevant form?
-	return new IncidentFormPage(this.driver, this.instance_url);
+	// this.driver.frame('gsft_main'); // This line used to be fine, but now it breaks the test. Replaced with frameParent(), though I'm not sure why.
+	this.driver.frameParent();
+
+	if (target == "incident.do"){
+		return new IncidentFormPage(this.driver, this.instance_url);
+	}	else {
+		console.log("This functionality is not supported yet! We need to create a page object for " + target);
+		return false;
+	};
 };
 
 module.exports = SN_Homepage;
-
-
-
