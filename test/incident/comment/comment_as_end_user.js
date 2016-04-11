@@ -1,31 +1,32 @@
 var chai = require('chai');
-// var browser = require('../utility/utilities.js');
 expect = chai.expect;
 chai.Should();
+var SNHomepage = require('../page_objects/sn_homepage.js');
+
+var instance_url = 'https://dev20728.service-now.com/';
+var username = 'madmin'; var password = 'madmin';
 
 describe('incident.do-- Comment on an incident as an end user', function(){
 	this.timeout(0);
 
-	it('logs in as an admin', function(done){
-		browser.login_as('https://dev20728.service-now.com', 'madmin', 'madmin');
-		var user_dropdown_visible = browser.isVisible('#user_info_dropdown');
-		expect(user_dropdown_visible).to.be.true;
-	});
+	var snHomepage;
+	var incRecordPage;
 
+	it('instantiates, then logs in as an admin', function(done){
+		snHomepage = new SNHomepage(browser, instance_url);
+		snHomepage.open();
+		snHomepage.login_as(username, password);
+	});
 	it('impersonates an end user', function(done){
-		browser.impersonate_user('Joe Employee');
-		var user_name = browser.getText('.user-name');
-		expect(user_name).to.be.string('Joe Employee');
+		snHomepage.impersonate_user('Joe Employee');
 	});
-
-	// Active Incident is INC0000003
-	it('navigates to an Active Incident (that this user owns) and comments', function(done){
+	it('navigates to an active incident record that is owned by this user', function(done){
 		var active_url = 'https://dev20728.service-now.com/nav_to.do?uri=incident.do?sys_id=e8caedcbc0a80164017df472f39eaed1%26sysparm_view=ess';
-		browser.nav_to_incident(active_url);
-		var result = browser.leave_comment_on_incident(); // Returns with the timestamp that it (supposedly) left as its comment
-		browser.verify_last_comment(result["timestamp"]);
+		incRecordPage = snHomepage.navToExistingRecordForm(active_url);
+		incRecordPage.leave_comment();
+		// incRecordPage.halt();
+		expect(incRecordPage.verify_last_comment()).to.be.true;
+		incRecordPage.halt();
 	});
 
-	// Note that a user inherently cannot comment on a Closed or Resolved Incident
 });
-

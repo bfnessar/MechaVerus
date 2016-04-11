@@ -1,8 +1,12 @@
 var chai = require('chai');
-// var utils = require('../utility/utilities.js');
-// var fields = require('./incident_fields.js');
 expect = chai.expect;
 chai.Should();
+
+// var SNHomepage = require('../page_objects/sn_homepage.js');
+// var storage = require('../persistent_values.js');
+// var instance_url = storage.instance_url;
+// var username = storage.login_creds.username;
+// var password = storage.login_creds.password;
 
 describe('incident.do-- Comment on an incident as ITIL', function(){
 	this.timeout(0);

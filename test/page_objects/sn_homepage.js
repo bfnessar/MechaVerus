@@ -10,6 +10,7 @@
 			* login_as(username, password)
 			* impersonate_user(username)
 			* navToNewRecordForm(target)
+			* navToExistingRecordForm(url)
 		INHERITED FROM PAGE.js:
 			* open()
 			* waitFor(locator, timeout)
@@ -18,6 +19,7 @@
 
 var page = require('./page');
 var IncidentFormPage = require('./incident_form_page');
+var IncidentRecordPage = require('./incident_record_page');
 function SN_Homepage (webdriver, instance_url) {
 	this.instance_url = instance_url;
 	page.call(this, webdriver, instance_url);
@@ -45,21 +47,23 @@ SN_Homepage.prototype.impersonate_user = function(username) {
     this.driver.click('#s2id_autogen3'); // Click on the text field
     this.driver.waitForExist('#s2id_autogen4_search', 5000); // Supposed to wait for options to populate
     this.driver.setValue('#s2id_autogen4_search',username); // Enter username as text
-    // this.driver.debug();
+    // browser.pause() is clunky here, but I can't access the elements that I want to wait for,
+    // so pausing is the only solution that seems to work for me.
     this.driver.pause(5000);
     this.driver.keys(['Enter']); // Submit
     this.driver.pause(3000);
     // this.driver.waitForExist('#filter', 3000);
     this.driver.frameParent();
 };
+// Candidate for replacing .pause() functions with .waitForExist().
 SN_Homepage.prototype.navToNewRecordForm = function(target) {
 	// Can navigate to a new incident, problem, or change request.
 	this.driver.frameParent();
 	this.driver.waitForExist('#filter');
 	this.driver.setValue('#filter', target);
-	this.driver.pause(1000);
+	this.driver.pause(3000);
 	this.driver.keys(['Enter']);
-	this.driver.pause(1000);
+	this.driver.pause(3000);
 	// this.driver.frame('gsft_main'); // This line used to be fine, but now it breaks the test. Replaced with frameParent(), though I'm not sure why.
 	this.driver.frameParent();
 
@@ -69,6 +73,12 @@ SN_Homepage.prototype.navToNewRecordForm = function(target) {
 		console.log("This functionality is not supported yet! We need to create a page object for " + target);
 		return false;
 	};
+};
+SN_Homepage.prototype.navToExistingRecordForm = function(url){
+	this.driver.url(url);
+	this.driver.pause(3000); // Consider replacing with this.driver.waitForExist('gsft_main');
+	this.driver.frame('gsft_main');
+	return new IncidentRecordPage(this.driver, this.url); // Is it this.url or this.instance_url?
 };
 
 module.exports = SN_Homepage;
