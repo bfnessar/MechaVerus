@@ -123,71 +123,40 @@ exports.config = {
     // Gets executed before test execution begins. At this point you can access all global
     // variables, such as `browser`. It is the perfect place to define custom commands.
     before: function (capabilities, specs) {
-        /* Thinking about whether we should import all data
-            here, in the hook, or if it should happen within each
-            individual test script. The latter is probably the better idea. */
-        // var incidents_fields = require('./test/incident/incident_fields.js');
+        // These require statements have to be called before every test script
+        var chai = require('chai');
+        global.expect = chai.expect;
+        chai.Should();
 
-        /* UTILITY */
-        // browser.addCommand("login_as", function(sn_url, username, password){
-        //     this.url(sn_url);
-        //     this.frame('gsft_main');
-        //     this.setValue('#user_name', username);
-        //     this.setValue('#user_password', password);
-        //     this.click('#sysverb_login');
-        //     this.frameParent();
-        // });
-        // browser.addCommand("impersonate_user", function(username){
-        //     this.frameParent();
-        //     this.click('#user_info_dropdown'); // Click the user dropdown
-        //     this.click('.dropdown-menu > li:nth-child(2) > a:nth-child(1)'); // Click on Impersonate User
-        //     this.waitForExist('#s2id_autogen3', 5000); // Wait for menu to appear
-        //     this.click('#s2id_autogen3'); // Click on the text field
-        //     this.waitForExist('#s2id_autogen4_search', 5000); // Supposed to wait for options to populate
-        //     this.setValue('#s2id_autogen4_search',username); // Enter username as text
-        //     this.pause(5000);
-        //     this.keys(['Enter']); // Submit
-        //     this.pause(3000);
-        //     this.frameParent();
-        // });
-        // browser.addCommand("navigate_via_filter", function(entry){
-        //     this.frameParent();
-        //     this.waitForExist('#filter');
-        //     this.setValue('#filter', entry);
-        //     this.pause(1000);
-        //     this.keys(['Enter']);
-        //     this.pause(1000);
-        //     this.frame('gsft_main');
-        // });
+        // Define utility functions
+        browser.addCommand("login_as", function(username, password){
+            /* Here are three blocks of code that ostensibly do the same thing, except they don't. */
+            /*  1) I WANT this code to work, where I call pageObj's methods,
+                but I can't interact with the elements that are returned by the pageObject's getters. */
+            // pageObj.setInstanceUrl(instanceUrl).open();
+            // pageObj.username_field.setValue(username);
+            // pageObj.password_field.setValue(password);
+            // pageObj.login_button.click();
 
+            /*  2) THIS code works, but it disobeys the principle that the element-names
+                should be enpacsulated within the page object. That is, we refer to '#user_name', etc.
+                explicitly in this wdio.config file. The benefit of NOT doing this (and, instead, using the
+                getter functions that I made) is that IF the DOM of the ServiceNow login page should ever change,
+                we would only need to change the name of the element ONCE, within sn_interface.page.js. Instead,
+                if it changes, we have to change the name of the element in BOTH the aforementioned page object file,
+                and also here, because we have hardcoded the element's name.    */
+            browser.setValue('#user_name', username);
+            browser.setValue('#user_password', password);
+            browser.click('#sysverb_login');
 
-        // /* INCIDENTS SUITE: */
-        // browser.addCommand("nav_to_incident", function(url){
-        //     this.url(url);
-        //     this.pause(3000);
-        //     this.frame('gsft_main');
-        // });
-        // browser.addCommand("leave_comment_on_incident", function(){
-        //     var now = new Date();
-        //     this.waitForExist('#activity-stream-textarea', 10000);
-        //     this.setValue('#activity-stream-textarea', 'Comment testing, logged at: <' + now.toString() + '>' );
-        //     this.waitForExist('.activity-submit', 10000);
-        //     this.click('.activity-submit');
-        //     this.pause(3000);
-        //     return {
-        //         // This is part of the comment that got left; pass this to the verification function to see if it is actually the last comment
-        //         timestamp: now.toString()
-        //     };
-        // });
-        // // Verifies that a comment was logged by checking the text of the 
-        // // element that represents the most recent comment, and matching it
-        // // to the expected comment.
-        // browser.addCommand("verify_last_comment", function (expected_comment){
-        //     var last_comment_identifier = 'li.sn-activity:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > ul:nth-child(1) > li:nth-child(1) > div:nth-child(1) > div:nth-child(1)';
-        //     this.waitForExist(last_comment_identifier, 10000); // Wait for the most recent comment to appear in the feed
-        //     var last_comment_text = this.getText(last_comment_identifier); // Extract the text of that comment
-        //     expect(last_comment_text).to.have.string(expected_comment); // Verify that it matches the expected text
-        // });
+            /*  3) OR we can define a function, called: pageObj.login_as(username, password),
+                that gets called by this addCommand. It seems like it should work,
+                but it doesn't, and also it feels silly to nest these login functions. I defined that function anyway,
+                and it's located in sn_interface.page.js. I don't think we're going to use it, though,
+                because it fails in the same way that Option 1 fails.
+            */
+            // pageObj.loginAs(username, password);
+        });
 
     },
     //

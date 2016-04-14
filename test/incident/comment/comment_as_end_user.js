@@ -1,32 +1,27 @@
-var chai = require('chai');
-expect = chai.expect;
-chai.Should();
-var SNHomepage = require('../page_objects/sn_homepage.js');
+/* NOT FINISHED. Come back to this please. */
 
-var instance_url = 'https://dev20728.service-now.com/';
-var username = 'madmin'; var password = 'madmin';
+var SNWindow = require('../page_objects/sn_interface.page.js');
+var IncidentRecordPage = require('../page_objects/incident_record.page.js');
+var storage = require('../persistent_values.js');
 
-describe('incident.do-- Comment on an incident as an end user', function(){
+var instance_url = storage.instance_url;
+var username = storage.login_creds.username;
+var password = storage.login_creds.password;
+
+describe('should allow an end user to comment on a personally-owned, open incident', function(){
 	this.timeout(0);
 
-	var snHomepage;
-	var incRecordPage;
-
-	it('instantiates, then logs in as an admin', function(done){
-		snHomepage = new SNHomepage(browser, instance_url);
-		snHomepage.open();
-		snHomepage.login_as(username, password);
+	it('sets up the page object, then logs in as an end user', function(done){
+		SNWindow.setInstanceUrl(instance_url).open();
+		browser.login_as(username, password);
 	});
+
 	it('impersonates an end user', function(done){
-		snHomepage.impersonate_user('Joe Employee');
-	});
-	it('navigates to an active incident record that is owned by this user', function(done){
-		var active_url = 'https://dev20728.service-now.com/nav_to.do?uri=incident.do?sys_id=e8caedcbc0a80164017df472f39eaed1%26sysparm_view=ess';
-		incRecordPage = snHomepage.navToExistingRecordForm(active_url);
-		incRecordPage.leave_comment();
-		// incRecordPage.halt();
-		expect(incRecordPage.verify_last_comment()).to.be.true;
-		incRecordPage.halt();
+		SNWindow.impersonateUser('Joe Employee');
 	});
 
+	it('navigates to an existing incident record, comments on it, then verifies that the comment was logged', function(done){
+		SNWindow.halt();
+	});
 });
+
