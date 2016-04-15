@@ -18,7 +18,7 @@ describe('should show all fields for an end user in incident.do', function(){
 		SNWindow.impersonateUser('Joe Employee');
 	});
 
-	it('navigates to a New Incident form, then verifies the existence its fields', function(done){
+	it('navigates to a New Incident form, then verifies the existence of its fields', function(done){
 		SNWindow.navToNewRecordForm('incident');
 		var fieldsArePresent = IncidentFormPage.verifyFieldsAsEndUser();
 		expect(fieldsArePresent).to.be.true;

@@ -1,9 +1,5 @@
 function SNInterface() {
 	this.instance_url;
-
-	// filter_field: 	{ };
-	// user_dropdown: 	{ };
-
 };
 // Define getters for the elements we expect to interact with
 SNInterface.prototype = {
@@ -21,26 +17,41 @@ SNInterface.prototype = {
 	// Getters for the Application Navigator
 	get filter_field() {return browser.element('#filter')}
 };
-// This function might be entirely unnecessary
+/* 	I'm going to establish the standard that ANY function that
+	causes a state change must end with frame('gsft_main')
+	or browser.frameParent() */
+/*  For functions that cause a state change, but aren't meant
+	to return any particular information-- should they still
+	return 'this'? Maybe there are benefits to doing that, but
+	I'm not sure what they would be. Hold on to that thought. */
+		// Oh hey, one benefit would be that you can chain
+		// methods in the test spec, as long as all chained
+		// methods return the page object itself, for code
+		// that looks like asynchronous syntax.
 SNInterface.prototype.setInstanceUrl = function(instance_url) {
+	// I should change the name of this function, because its role is going to be something like "navigate to SN homepage"
 	this.instance_url = instance_url;
 	browser.url(instance_url);
 	browser.frame('gsft_main');
 	return this;
 };
+// And let's eventually get rid of this one altogether (can't do it now bc all the test scripts call open() so it should have SOME definition)
 SNInterface.prototype.open = function() {
-	browser.url(this.url);
+	return this;
 };
 SNInterface.prototype.halt = function() {
 	return browser.debug();
+	return this;
 };
 
 SNInterface.prototype.loginAs = function(username, password) {
+	browser.frameParent();
 	this.username_field.setValue(username);
 	this.password_field.setValue(password);
 	this.login_button.click();
+	browser.frameParent();
+	return this;
 };
-
 SNInterface.prototype.impersonateUser = function(username) {
 	browser.frameParent();
 	this.dropdown_menu.click(); // Click the user dropdown
@@ -52,9 +63,9 @@ SNInterface.prototype.impersonateUser = function(username) {
 	browser.keys(['Enter']); // Select the user
 	browser.pause(3000);
 	browser.frameParent();
-	// return this; // Not sure if this is necessary but it could be useful later
+	return this; // Not sure if this is necessary but it could be useful later
 };
-
+// Should maybe return a new page object? Right now it just navigates the browser.
 SNInterface.prototype.navToNewRecordForm = function(form_name) {
 	browser.frameParent();
 	this.filter_field.waitForExist();
@@ -63,19 +74,31 @@ SNInterface.prototype.navToNewRecordForm = function(form_name) {
 	browser.keys(['Enter']);
 	browser.pause(3000);
 	browser.frameParent();
-
+	
 	switch (form_name) {
 		case 'incident':
 			// Return an IncidentForm PageObject
-
 			break;
 		case 'change_request':
-			//
+			// Return a ChangeRequest PageObject
 			break;
 		default:
 			console.log("I don't recognize this form type");
 			return false;
 	};
+};
+SNInterface.prototype.navToExistingRecord = function(url) {
+	browser.url(url);
+	browser.pause(3000);
+	/*	If we're following the rule of "return a page object",
+		the we should determine what kind of page object we're
+		on, then use a switch statement to return that kind.
+		We'd also have to 'require' each page object file and
+		instantiate them in some particular way that I don't
+		want to have to figure out right now.
+		However, since we're not doing that, this function is
+		basically a slower, less functional version of open(url).
+	*/
 };
 
 module.exports = new SNInterface()

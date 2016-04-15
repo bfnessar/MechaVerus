@@ -1,9 +1,8 @@
 var SNWindow = require('../page_objects/sn_interface.page.js');
-var IncidentRecordPage = require('../page_objects/incident_record.page.js');
+var IncidentFormPage = require('../page_objects/incident_form.page.js');
 var storage = require('../persistent_values.js');
 
 var instance_url = storage.instance_url;
-var open_incident_url = storage.stock_incidents.cE_oD_aI_open;
 var username = storage.login_creds.username;
 var password = storage.login_creds.password;
 
@@ -19,10 +18,9 @@ describe('verifies that certain fields in incident.do are read-only to the end u
 		SNWindow.impersonateUser('Joe Employee');
 	});
 
-	it('navigates to an open Incident record, then verifies that the expected fields are read-only', function(done){
-		SNWindow.navToExistingRecord(open_incident_url);
-		var read_only_fields_validated = IncidentRecordPage.verifyReadOnlyAs('end user');
+	it('navigates to a New Incident form, then verifies the read-only status of its fields', function(done){
+		SNWindow.navToNewRecordForm('incident');
+		var read_only_fields_validated = IncidentFormPage.verifyReadOnlyAs('end user');
 		expect(read_only_fields_validated).to.be.true;
 	});
-
 });

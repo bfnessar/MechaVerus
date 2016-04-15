@@ -20,8 +20,7 @@ describe('verifies that certain fields in incident.do are read-only to an ITIL u
 
 	it('navigates to a new incident form, then verifies the read-only status of its fields', function(done){
 		SNWindow.navToNewRecordForm('incident');
-		IncidentFormPage.verifyReadOnlyAsEndUser();
-		// var read_only_fields_validated = IncidentFormPage.verifyReadOnlyAsITIL();
-		// expect(read_only_fields_validated).to.be.true;
+		var read_only_fields_validated = IncidentFormPage.verifyReadOnlyAs('ITIL user');
+		expect(read_only_fields_validated).to.be.true;
 	});
 });
