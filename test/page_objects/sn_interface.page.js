@@ -90,6 +90,16 @@ SNInterface.prototype.navToNewRecordForm = function(form_name) {
 SNInterface.prototype.navToExistingRecord = function(url) {
 	browser.url(url);
 	browser.pause(3000);
+
+	/* This snippet is useful in IncidentRecordPage.verifyReadOnlyAs(), to make sure that
+		the record page has been loaded fully. It probably would be good to move
+		that snippet to this here state-change function, but I don't want to 
+		change it yet. */
+	// // Make sure we've fully-loaded the record page
+	browser.waitForExist('#gsft_main');
+	browser.waitForEnabled('#gsft_main');
+	browser.frame('gsft_main');
+
 	/*	If we're following the rule of "return a page object",
 		the we should determine what kind of page object we're
 		on, then use a switch statement to return that kind.

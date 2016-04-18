@@ -35,34 +35,75 @@ var incidentRecordPage = Object.create(snInterfacePage, {
 		};
 	} },
 
-	verifyReadOnlyAs: {value: function(user_role) {
-		switch (user_role){
-			case 'end user':
-				var fieldsRO = [
-					'#sys_readonly\\.incident\\.number',
-					'#sys_readonly\\.incident\\.opened_at',
-					'#sys_readonly\\.incident\\.closed_at',
-					'#sys_readonly\\.incident\\.state',
-				];
-				break;
-			case 'ITIL user':
-				var fieldsRO = [
-					'#sys_readonly\\.incident\\.number',
-					'#incident\\.priority',
-					'#sys_readonly\\.incident\\.opened_at',
-					'#incident\\.opened_by_label',
-					'#incident\\.closed_by_label',
-					'#sys_readonly\\.incident\\.closed_at'
-				];
-				break;
-			default:
-				console.log("I don't recognize " + user_role + " as a user role");
-				return false;
+	// Should account for user roles AND open/closed incidents (amounts to 4 cases)
+	verifyReadOnlyAs: {value: function(user_role, incident_state) {
+		// Figures out which set of fields to check for
+		if (user_role == "end user" && incident_state == "open") {
+			var fieldsRO = [
+				'#sys_readonly\\.incident\\.number',
+				'#sys_readonly\\.incident\\.opened_at',
+				'#sys_readonly\\.incident\\.closed_at',
+				'#sys_readonly\\.incident\\.state',
+			];
+		}
+		else if (user_role == "end user" && incident_state == "closed") {
+			var fieldsRO = [
+				'#sys_readonly\\.incident\\.number',
+				'#incident\\.caller_id_label',
+				'#sys_readonly\\.incident\\.short_description',
+				'#sys_readonly\\.incident\\.opened_at',
+				'#sys_readonly\\.incident\\.closed_at',
+				'#sys_readonly\\.incident\\.impact',
+				'#sys_readonly\\.incident\\.state'
+			];
+		}
+		else if (user_role == "ITIL user" && incident_state == "open") {
+			var fieldsRO = [
+				'#sys_readonly\\.incident\\.number',
+				'#incident\\.priority',
+				'#sys_readonly\\.incident\\.opened_at',
+				'#incident\\.opened_by_label',
+				'#incident\\.closed_by_label',
+				'#sys_readonly\\.incident\\.closed_at'
+			];
+		}
+		else if (user_role == "ITIL user" && incident_state == "closed") {
+			var fieldsRO = [
+				'#sys_readonly\\.incident\\.number',
+				'#incident\\.caller_id_label',
+				'#incident\\.location_label',
+				'#sys_readonly\\.incident\\.category',
+				'#sys_readonly\\.incident\\.subcategory',
+				'#incident\\.cmdb_ci_label',
+				'#sys_readonly\\.incident\\.impact',
+				'#sys_readonly\\.incident\\.urgency',
+				'#sys_readonly\\.incident\\.priority',
+				'#sys_readonly\\.incident\\.short_description',
+				'#sys_readonly\\.incident\\.opened_at',
+				'#incident\\.opened_by_label',
+				'#sys_readonly\\.incident\\.contact_type',
+				'#sys_readonly\\.incident\\.state',
+				'#incident\\.assignment_group_label',
+				'#incident\\.assigned_to_label',
+				'#incident\\.problem_id_label',
+				'#incident\\.rfc_label',
+				'#incident\\.caused_by_label',
+				// '#label\\.ni\\.incident\\.knowledge',	// This read-only element doesn't conform to the rules. Maybe a general rule will emerge around whatever "ni" means, but I'll just ignore this issue for now.
+				'#sys_readonly\\.incident\\.close_code',
+				'#incident\\.close_notes',
+				'#incident\\.closed_by_label',
+				'#sys_readonly\\.incident\\.closed_at',
+			];
+		}
+		else {
+			console.log("I couldn't recognize " + user_role + " as a user role, and/or " + incident_state + " as an incident state.");
+			return false;
 		};
-		browser.frameParent();
-		// if (browser.waitForExist('gsft_main', 5000)){
-		// 	browser.frame('gsft_main');
-		// };
+
+		// Make sure we've fully-loaded the incident record page
+		// browser.waitForExist('#gsft_main');
+		// browser.waitForEnabled('#gsft_main');
+		// browser.frame('gsft_main');
 
 		var found = []; var not_found = [];
 		var verified = []; var not_verified = [];

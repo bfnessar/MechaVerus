@@ -83,8 +83,12 @@ var incidentFormPage = Object.create(snInterfacePage, {
 
 	verifyReadOnlyAs: {value: function(user_role) {
 		// Verifies that the necessary fields are read-only (and, consequently, that they exist)
-		/* Depending on the user role, we verify a different set of fields.
-			That said, the verification process is exacrly the same either way. */
+		/*  Depending on the user role, we verify a different set of fields.
+			That said, the verification process is exacrly the same either way.
+			The corresponding function in IncidentRecordPage requires the parameter 'incident_state',
+				which will be either 'open' or 'closed', but in this case a new incident can only be open,
+				so we don't have to make that distinction.
+		 */
 		switch (user_role) {
 			case 'end user':
 				var fieldsRO = [ 
