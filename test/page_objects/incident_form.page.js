@@ -3,6 +3,50 @@ var fields = require('../incident/incident_fields_css.js');
 
 var incidentFormPage = Object.create(snInterfacePage, {
 
+	verifyUIActionsAs: {value: function(user_role) {
+		// Decide which set of buttons to look for
+		if (user_role == "ITIL user") {
+			var ui_buttons = [
+				'button.header:nth-child(1)', // Submit button (top)
+				'button.header:nth-child(2)', // ResolveIncident button (top)
+				'#incident\\.do > div:nth-child(42) > button:nth-child(1)', // Submit button (bottom)
+				'#incident\\.do > div:nth-child(42) > button:nth-child(2)' // ResolveIncident button (bottom)
+			];
+		}
+		else if (user_role == "end user") {
+			var ui_buttons = [
+				'button.header:nth-child(1)', // Submit button (top)
+				'button.header:nth-child(1)', // ResolveIncident button (top)
+				'#incident\\.do > div:nth-child(38) > button:nth-child(1)', // Submit button (bottom)
+				'#incident\\.do > div:nth-child(38) > button:nth-child(2)' // ResolveIncident button (bottom)
+			];
+		}
+		else {
+			console.log("I couldn't recognize " + user_role + " as a user role");
+			return false;
+		};
+		// Make sure you have access to the elements on the page
+		browser.waitForExist('#gsft_main');
+		browser.waitForEnabled('#gsft_main');
+		browser.frame('gsft_main');
+
+		// Check the page for each of the buttons
+		var found = []; var not_found = [];
+		ui_buttons.forEach(function(entry){
+			if(!browser.isExisting(entry)){
+				not_found.push(entry);
+			}	else {
+				found.push(entry);
+			};
+		});
+		if (not_found.length > 0){
+			console.log("Could not find the following UI action buttons: " + not_found);
+			return false;
+		}	else {
+			return true;
+		};
+	} },
+
 	// Verifies the EXISTENCE of form fields for ITIL
 	verifyFieldsAsITIL: { value: function() {
 		browser.frame('gsft_main');
