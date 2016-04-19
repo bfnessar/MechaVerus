@@ -60,6 +60,8 @@ SNInterface.prototype.impersonateUser = function(username) {
 	this.impersonate_user_search_bar.click(); // Click into the "Search" field once it exists
 	this.impersonate_user_text_field.setValue(username); // Enter the username of your impersonatee
 	browser.pause(5000); // Wait for the machine to find that user
+	// browser.waitForExist('#div\\.select2-result-cell:nth-child\\(2\\)');
+	// browser.waitForEnabled('#div\\.select2-result-cell:nth-child\\(2\\)');
 	browser.keys(['Enter']); // Select the user
 	browser.pause(3000);
 	browser.frameParent();

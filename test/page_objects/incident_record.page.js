@@ -12,6 +12,96 @@ var incidentRecordPage = Object.create(snInterfacePage, {
 	last_comment_element: {get: function() {return browser.element('li.sn-activity:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > ul:nth-child(1) > li:nth-child(1) > div:nth-child(1) > div:nth-child(1)'); } },
 
 	// Override/Create methods
+	verifyUIActionsAs: {value: function(user_role, incident_state){
+		if (user_role == "ITIL user" && incident_state == "open") {
+			var ui_buttons = [
+				// TOP of page
+				'#connectFollow',
+					'.dropdown-toggle', // Dropdown on 'Follow' button
+					'li.connect-follow > a:nth-child(1)', // Follow->Follow
+					'.connect-inframe > a:nth-child(1)', // Follow->OpenConnectMini
+					'.dropdown-menu > li:nth-child(5) > a:nth-child(1)', // Follow->OpenConnectFull
+				'button.form_action_button:nth-child(4)',
+				'button.form_action_button:nth-child(5)',
+				// BOTTOM of page
+				'button.form_action_button:nth-child(1)',
+				'button.form_action_button:nth-child(2)',
+			];
+		}
+		else if (user_role == "ITIL user" && incident_state == "closed") {
+			var ui_buttons = [
+				'#connectFollow', // Follow (button)
+					'.dropdown-toggle', // Follow (dropdown button)
+					'li.connect-follow > a:nth-child(1)', // Follow->Follow
+					'.connect-inframe > a:nth-child(1)', // Follow->OpenConnectMini
+					'.dropdown-menu > li:nth-child(5) > a:nth-child(1)' // Follow->OpenConnectFull
+			];
+		}
+		else if (user_role == "end user" && incident_state == "open") {
+			var ui_buttons = [
+				// TOP of page
+				'#connectFollow', // Follow (button)
+					'.dropdown-toggle', // Follow (dropdown button)
+					'li.connect-follow > a:nth-child(1)', // Follow->Follow
+					'.connect-inframe > a:nth-child(1)', // Follow->OpenConnectMini
+					'.dropdown-menu > li:nth-child(5) > a:nth-child(1)', // Follow->OpenConnectFull
+				'button.form_action_button:nth-child(4)', // Update
+				'button.form_action_button:nth-child(5)', // ResolveIncident
+				// BOTTOM of page
+				'button.form_action_button:nth-child(1)', // Update
+				'button.form_action_button:nth-child(2)', // ResolveIncident
+			];
+		}
+		else if (user_role == "end user" && incident_state == "closed") {
+			/* Unique: EU is already following this closed incident; is that the case for all EU-opened closed incidents?
+				Not sure, but I'm just copy/pasting the selectors for now. Come back to this later if it is not scalable as is. */
+			var ui_buttons = [
+				'#connectUnfollow', // (Un)follow(ing) (button)
+				'.dropdown-toggle', // Following (dropdown button)
+				'li.connect-unfollow > a:nth-child(1)', // Following->Unfollow
+				'.connect-inframe > a:nth-child(1)', // Following->OpenConnectMini
+				'.dropdown-menu > li:nth-child(5) > a:nth-child(1)', // Following->OpenConnectFull
+			];
+		}
+		else {
+			console.log("I couldn't recognize " + user_role + " as a user role, and/or could not recognize " + incident_state + " as an incident state");
+			return false;
+		};
+
+		var found = []; var not_found = [];
+		ui_buttons.forEach(function(entry){
+			if(!browser.isExisting(entry)){
+				not_found.push(entry);
+			}	else {
+				found.push(entry);
+			};
+		});
+		if (not_found.length > 0){
+			console.log("Could not find the following UI Actions: " + not_found);
+			return false;
+		}	else {
+			return true;
+		};
+	} },
+
+	verifyFieldsExistAs: {value: function(user_role, incident_state){
+		if (user_role == "ITIL user" && incident_state == "open") {
+			;
+		}
+		else if (user_role == "ITIL user" && incident_state == "closed") {
+			;
+		}
+		else if (user_role == "end user" && incident_state == "open") {
+			;
+		}
+		else if (user_role == "end user" && incident_state == "closed") {
+			;
+		}
+		else {
+			console.log("I couldn't recognize " + user_role + " as a user role, and/or could not recognize " + incident_state + " as an incident state");
+		};
+	} },
+
 	leaveComment: {value: function() {
 		browser.frame('gsft_main');
 		var now = new Date();
