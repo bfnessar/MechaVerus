@@ -3,6 +3,10 @@ var fields = require('../incident/incident_fields_css.js');
 
 var incidentFormPage = Object.create(snInterfacePage, {
 
+	uiActionExists: {value: function(element_id){
+		return browser.isExisting(element_id);
+	}},
+
 	verifyUIActionsAs: {value: function(user_role) {
 		// Decide which set of buttons to look for
 		if (user_role == "ITIL user") {

@@ -22,14 +22,23 @@ describe('verifies that UI Actions are present for an ITIL user on existing inci
 
 	it('navigates to an Open Incident record, then verifies that the UI actions are present', function(done){
 		SNWindow.navToExistingRecord(open_incident_url);
-		var ui_actions_verified = IncidentRecordPage.verifyUIActionsAs('ITIL user', 'open');
-		ui_actions_verified.should.be.true;
+		var elementsToCheck = [
+			'#connectFollow',	// Follow button
+			'#sysverb_update',	// Update button
+			'#resolve_incident',// Resolve button
+		];
+		elementsToCheck.forEach(function(entry){
+			// console.log("Looking for " + entry);
+			IncidentRecordPage.uiActionExists(entry).should.be.true;
+		});
 	});
 
 	it('navigates to a Closed Incident record, then verifies that the UI actions are present', function(done){
 		SNWindow.navToExistingRecord(closed_incident_url);
-		var ui_actions_verified = IncidentRecordPage.verifyUIActionsAs('ITIL user', 'closed');
-		ui_actions_verified.should.be.true;
+		var elementsToCheck = ['#connectFollow'];
+		elementsToCheck.forEach(function(entry){
+			// console.log("Looking for " + entry);
+			IncidentRecordPage.uiActionExists(entry).should.be.true;
+		});
 	});
-
 });

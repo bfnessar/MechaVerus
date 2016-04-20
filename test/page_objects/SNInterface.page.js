@@ -79,6 +79,10 @@ SNInterface.prototype.navToNewRecordForm = function(form_name) {
 	
 	switch (form_name) {
 		case 'incident':
+			browser.waitForExist('#gsft_main');
+			browser.waitForEnabled('#gsft_main');
+			browser.frame('gsft_main');
+
 			// Return an IncidentForm PageObject
 			break;
 		case 'change_request':

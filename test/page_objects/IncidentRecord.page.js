@@ -20,28 +20,12 @@ var incidentRecordPage = Object.create(snInterfacePage, {
 		follow_OpenConnectFull: {get: function() {return browser.element('.dropdown-menu > li:nth-child(5) > a:nth-child(1)'); } },
 	update_button_top: 			{get: function() {return browser.element('button.form_action_button:nth-child(4)'); } },
 	resolve_button_top: 		{get: function() {return browser.element('button.form_action_button:nth-child(5)'); } },
-																		button.form_action_button:nth-child(7)	
 	update_button_bottom: 		{get: function() {return browser.element('button.form_action_button:nth-child(1)'); } },
 	resolve_button_bottom: 		{get: function() {return browser.element('button.form_action_button:nth-child(2)'); } },	
 
 	// Override/Create methods
-	uiActionExists: {value: function(action_name) {
-		var action = action_name.toLowerCase();
-		switch (action) {
-			case 'follow': {
-				return this.top_follow_button.isExisting();
-			}
-			case 'update': {
-				return this.update_button_top.isExisting();
-			}
-			case 'resolve': {
-				return this.resolve_button_top.isExisting();
-			}
-			default: {
-				console.log("Didn't recognize ${action_name} as a user action");
-				return false;
-			}
-		};
+	uiActionExists: {value: function(element_id) {
+		return browser.isExisting(element_id);
 	} },
 
 	verifyUIActionsAs: {value: function(user_role, incident_state){

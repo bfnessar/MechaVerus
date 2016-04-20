@@ -20,7 +20,13 @@ describe('should show all fields for an end user in incident.do', function(){
 
 	it('navigates to a New Incident form, then verifies the existence of its fields', function(done){
 		SNWindow.navToNewRecordForm('incident');
-		var ui_buttons_present = IncidentFormPage.verifyUIActionsAs('ITIL user');
-		expect(ui_buttons_present).to.be.true;
+		var elementsToCheck = [
+			'#sysverb_insert',	// Submit button
+			'#resolve_incident',// Resolve button
+		];
+		elementsToCheck.forEach(function(entry){
+			// console.log("Looking for " + entry);
+			IncidentFormPage.uiActionExists(entry).should.be.true;
+		});
 	});
 });
