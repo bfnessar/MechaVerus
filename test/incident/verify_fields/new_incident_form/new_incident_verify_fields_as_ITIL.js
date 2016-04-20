@@ -1,5 +1,5 @@
-var SNWindow = require('../page_objects/sn_interface.page.js');
-var IncidentFormPage = require('../page_objects/incident_form.page.js');
+var SNWindow = require('../page_objects/SNInterface.page.js');
+var IncidentFormPage = require('../page_objects/IncidentForm.page.js');
 
 var storage = require('../persistent_values.js');
 // Likewise, move these guys.

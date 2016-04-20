@@ -1,4 +1,4 @@
-var snInterfacePage = require('./sn_interface.page');
+var snInterfacePage = require('./SNInterface.page');
 var fields = require('../incident/incident_fields_css.js');
 
 var incidentFormPage = Object.create(snInterfacePage, {

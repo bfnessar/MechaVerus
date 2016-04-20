@@ -1,4 +1,4 @@
-var snInterfacePage = require('./sn_interface.page');
+var snInterfacePage = require('./SNInterface.page');
 
 /* PRECONDITION: The browser is currently on an existing record page */
 var incidentRecordPage = Object.create(snInterfacePage, {

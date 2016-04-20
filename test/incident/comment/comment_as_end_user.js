@@ -1,7 +1,7 @@
 /* NOT FINISHED. Come back to this please. */
 
-var SNWindow = require('../page_objects/sn_interface.page.js');
-var IncidentRecordPage = require('../page_objects/incident_record.page.js');
+var SNWindow = require('../page_objects/SNInterface.page.js');
+var IncidentRecordPage = require('../page_objects/IncidentRecord.page.js');
 var storage = require('../persistent_values.js');
 
 var instance_url = storage.instance_url;
