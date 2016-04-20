@@ -11,7 +11,39 @@ var incidentRecordPage = Object.create(snInterfacePage, {
 	comment_submit_button: {get: function() { return browser.element('.activity-submit'); } },
 	last_comment_element: {get: function() {return browser.element('li.sn-activity:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > ul:nth-child(1) > li:nth-child(1) > div:nth-child(1) > div:nth-child(1)'); } },
 
+	// UI Action buttons:
+	top_follow_button: {get: function() { return browser.element('#connectFollow');} },
+		// Items that appear under the Follow dropdown
+		follow_dropdown_toggle: {get: function() {return browser.element('.dropdown-toggle'); } },
+		follow_dropdown_follow: {get: function() {return browser.element('li.connect-follow > a:nth-child(1)'); } },
+		follow_OpenConnectMini: {get: function() {return browser.element('.connect-inframe > a:nth-child(1)'); } },
+		follow_OpenConnectFull: {get: function() {return browser.element('.dropdown-menu > li:nth-child(5) > a:nth-child(1)'); } },
+	update_button_top: 			{get: function() {return browser.element('button.form_action_button:nth-child(4)'); } },
+	resolve_button_top: 		{get: function() {return browser.element('button.form_action_button:nth-child(5)'); } },
+																		button.form_action_button:nth-child(7)	
+	update_button_bottom: 		{get: function() {return browser.element('button.form_action_button:nth-child(1)'); } },
+	resolve_button_bottom: 		{get: function() {return browser.element('button.form_action_button:nth-child(2)'); } },	
+
 	// Override/Create methods
+	uiActionExists: {value: function(action_name) {
+		var action = action_name.toLowerCase();
+		switch (action) {
+			case 'follow': {
+				return this.top_follow_button.isExisting();
+			}
+			case 'update': {
+				return this.update_button_top.isExisting();
+			}
+			case 'resolve': {
+				return this.resolve_button_top.isExisting();
+			}
+			default: {
+				console.log("Didn't recognize ${action_name} as a user action");
+				return false;
+			}
+		};
+	} },
+
 	verifyUIActionsAs: {value: function(user_role, incident_state){
 		if (user_role == "ITIL user" && incident_state == "open") {
 			var ui_buttons = [
@@ -81,24 +113,6 @@ var incidentRecordPage = Object.create(snInterfacePage, {
 			return false;
 		}	else {
 			return true;
-		};
-	} },
-
-	verifyFieldsExistAs: {value: function(user_role, incident_state){
-		if (user_role == "ITIL user" && incident_state == "open") {
-			;
-		}
-		else if (user_role == "ITIL user" && incident_state == "closed") {
-			;
-		}
-		else if (user_role == "end user" && incident_state == "open") {
-			;
-		}
-		else if (user_role == "end user" && incident_state == "closed") {
-			;
-		}
-		else {
-			console.log("I couldn't recognize " + user_role + " as a user role, and/or could not recognize " + incident_state + " as an incident state");
 		};
 	} },
 

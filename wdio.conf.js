@@ -10,7 +10,7 @@ exports.config = {
     // directory is where your package.json resides, so `wdio` will be called from there.
     //
     specs: [
-        './test/isolation/*.js'
+        './test/incident/verify UI actions/existingIncident_verifyUI_asEndUser.js'
     ],
     // Patterns to exclude.
     exclude: [
